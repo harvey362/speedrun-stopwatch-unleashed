@@ -1129,6 +1129,16 @@
                         <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
                         <button style="width: 100%; background: var(--accent-secondary); color: #fff;" onclick="document.getElementById('importFile').click()">Import Data</button>
                     </div>
+
+                    <div class="settings-group">
+                        <h3 style="color: var(--danger);">⚠️ Danger Zone</h3>
+                        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">
+                                This will permanently delete ALL your data including runs, achievements, XP, unlocked themes, and settings. This action cannot be undone!
+                            </p>
+                            <button style="width: 100%; background: var(--danger); color: #fff; font-weight: bold;" onclick="resetAllData()">🗑️ Reset All Data</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2222,6 +2232,29 @@
 
             gameState.achievements.sharer = true;
             checkAchievements();
+        }
+
+        function resetAllData() {
+            // First confirmation
+            if (!confirm('⚠️ WARNING ⚠️\n\nAre you absolutely sure you want to DELETE ALL DATA?\n\nThis will permanently erase:\n• All run history\n• All achievements\n• XP and level progress\n• Unlocked themes\n• Streak data\n• All settings\n\nThis action CANNOT be undone!')) {
+                return;
+            }
+
+            // Second confirmation to prevent accidents
+            if (!confirm('🚨 FINAL WARNING 🚨\n\nThis is your last chance!\n\nClick OK to permanently delete everything, or Cancel to keep your data safe.')) {
+                return;
+            }
+
+            // Clear localStorage
+            localStorage.removeItem('speedrunUnleashedData');
+
+            // Show confirmation
+            showToast('💥 All data has been reset!');
+
+            // Reload the page to reinitialize everything
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
         }
 
         // ============================================================================
