@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speedrun Stopwatch</title>
+    <title>Speedrun Stopwatch UNLEASHED</title>
     <style>
         * {
             margin: 0;
@@ -11,58 +11,236 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #0a0a0a;
+            --accent-primary: #c9b896;
+            --accent-secondary: #8b7355;
+            --text-primary: #e4e4e4;
+            --text-secondary: #888;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --info: #60a5fa;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            color: #e4e4e4;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Theme Styles */
+        body.theme-neon {
+            --bg-primary: #0a0a1f;
+            --bg-secondary: #000010;
+            --accent-primary: #00f3ff;
+            --accent-secondary: #ff00ff;
+            --text-primary: #ffffff;
+        }
+
+        body.theme-matrix {
+            --bg-primary: #000000;
+            --bg-secondary: #001100;
+            --accent-primary: #00ff00;
+            --accent-secondary: #008800;
+            --text-primary: #00ff00;
+        }
+
+        body.theme-cyberpunk {
+            --bg-primary: #0f0817;
+            --bg-secondary: #1a0b2e;
+            --accent-primary: #ff006e;
+            --accent-secondary: #ffbe0b;
+            --text-primary: #f1f1f1;
+        }
+
+        body.theme-retro {
+            --bg-primary: #2b1b17;
+            --bg-secondary: #1a0f0f;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #f7931e;
+            --text-primary: #fff1e6;
+        }
+
+        body.theme-minimal {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --accent-primary: #000000;
+            --accent-secondary: #333333;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+        }
+
+        body.theme-ocean {
+            --bg-primary: #0a1929;
+            --bg-secondary: #001e3c;
+            --accent-primary: #00b4d8;
+            --accent-secondary: #0077b6;
+            --text-primary: #e0f2fe;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
+        /* Header with Stats */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
         h1 {
-            text-align: center;
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            text-shadow: 0 0 20px var(--accent-primary);
             margin-bottom: 10px;
-            color: #d4c5a9;
-            text-shadow: 0 0 10px rgba(212, 197, 169, 0.3);
+            animation: glow 2s ease-in-out infinite;
         }
 
-        .hotkeys-info {
-            text-align: center;
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 30px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px var(--accent-primary); }
+            50% { text-shadow: 0 0 40px var(--accent-primary), 0 0 60px var(--accent-primary); }
         }
 
-        .hotkeys-info kbd {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #c9b896;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin: 0 2px;
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .stopwatch-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .xp-bar {
+            max-width: 400px;
+            margin: 15px auto;
+            background: rgba(255,255,255,0.1);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .xp-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
         }
 
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .panel-title {
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Timer Section */
         .run-info {
             margin-bottom: 20px;
         }
@@ -74,52 +252,74 @@
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
-            color: #e4e4e4;
+            color: var(--text-primary);
             font-size: 16px;
             font-family: inherit;
+            transition: all 0.3s ease;
         }
 
-        .run-info textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .run-info input::placeholder, .run-info textarea::placeholder {
-            color: #888;
+        .run-info input:focus, .run-info textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(201, 184, 150, 0.3);
         }
 
         .timer-display {
-            font-size: 72px;
+            font-size: 5rem;
             font-weight: bold;
             text-align: center;
             font-family: 'Courier New', monospace;
-            color: #c9b896;
+            color: var(--accent-primary);
             margin: 30px 0;
-            text-shadow: 0 0 20px rgba(201, 184, 150, 0.4);
-            letter-spacing: 4px;
+            text-shadow: 0 0 30px var(--accent-primary);
+            letter-spacing: 8px;
+            position: relative;
         }
 
         .timer-display.running {
-            color: #a89968;
-            text-shadow: 0 0 20px rgba(168, 153, 104, 0.4);
+            animation: timerPulse 1s ease-in-out infinite;
         }
 
-        .timer-display.finished {
-            color: #8b7355;
-            text-shadow: 0 0 20px rgba(139, 115, 85, 0.4);
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .timer-status {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: -20px;
+            margin-bottom: 20px;
+        }
+
+        .timer-comparison {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .comparison-ahead {
+            color: var(--success);
+        }
+
+        .comparison-behind {
+            color: var(--danger);
         }
 
         .controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 12px 24px;
+            font-size: 16px;
             font-weight: bold;
             border: none;
             border-radius: 10px;
@@ -127,38 +327,56 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         }
 
         .btn-start {
-            background: linear-gradient(135deg, #8b7355, #6b5644);
+            background: linear-gradient(135deg, var(--success), #22c55e);
+            color: #fff;
+        }
+
+        .btn-pause {
+            background: linear-gradient(135deg, var(--warning), #f59e0b);
             color: #fff;
         }
 
         .btn-stop {
-            background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: #fff;
         }
 
         .btn-lap {
-            background: linear-gradient(135deg, #a89968, #8b7f5a);
+            background: linear-gradient(135deg, var(--info), #3b82f6);
             color: #fff;
         }
 
         .btn-reset {
-            background: linear-gradient(135deg, #5a5a5a, #3a3a3a);
+            background: linear-gradient(135deg, #6b7280, #4b5563);
             color: #fff;
-        }
-
-        .btn-export {
-            background: linear-gradient(135deg, #c9b896, #a89968);
-            color: #1a1a1a;
-            padding: 10px 20px;
-            font-size: 14px;
         }
 
         button:disabled {
@@ -167,87 +385,172 @@
             transform: none !important;
         }
 
+        /* Splits Display */
         .splits-container {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 20px;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
-        }
-
-        .splits-container h3 {
-            margin-bottom: 15px;
-            color: #c9b896;
         }
 
         .split-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px;
-            margin-bottom: 5px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-            border-left: 3px solid #8b7355;
-        }
-
-        .split-item .split-name {
-            color: #aaa;
-        }
-
-        .split-item .split-times {
-            display: flex;
-            gap: 20px;
-        }
-
-        .split-cumulative {
-            color: #a89968;
-            font-weight: bold;
-        }
-
-        .split-lap {
-            color: #8b7355;
-        }
-
-        .history-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .history-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-secondary);
+            transition: all 0.3s ease;
         }
 
-        .history-section h2 {
-            color: #c9b896;
+        .split-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
         }
 
-        .pb-badge {
-            background: linear-gradient(135deg, #8b7355, #6b5644);
-            color: #fff;
-            padding: 5px 15px;
-            border-radius: 20px;
+        .split-item.gold {
+            border-left-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .split-name {
+            color: var(--text-secondary);
             font-weight: bold;
-            font-size: 14px;
-            display: inline-block;
         }
 
+        .split-times {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .split-delta {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .split-delta.positive {
+            color: var(--success);
+        }
+
+        .split-delta.negative {
+            color: var(--danger);
+        }
+
+        /* Sidebar */
+        .achievements-panel {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .achievement.unlocked {
+            border-left-color: var(--accent-primary);
+            background: rgba(201, 184, 150, 0.1);
+            animation: unlockPulse 0.5s ease;
+        }
+
+        @keyframes unlockPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            filter: grayscale(100%);
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .achievement.unlocked .achievement-icon {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+
+        .achievement-info {
+            flex: 1;
+        }
+
+        .achievement-name {
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .achievement-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab.active {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* History */
         .history-item {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 15px;
-            border-left: 4px solid #8b7355;
+            border-left: 4px solid var(--accent-secondary);
             position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
         .history-item.personal-best {
-            border-left-color: #a89968;
-            background: rgba(168, 153, 104, 0.1);
+            border-left-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
         }
 
         .history-item-header {
@@ -257,102 +560,229 @@
             margin-bottom: 10px;
         }
 
-        .history-item-title {
-            flex: 1;
-        }
-
-        .history-item-title h3 {
-            color: #c9b896;
-            margin-bottom: 5px;
-        }
-
-        .history-item-title p {
-            color: #888;
-            font-size: 14px;
-        }
-
         .history-item-time {
-            font-size: 32px;
+            font-size: 2rem;
             font-weight: bold;
             font-family: 'Courier New', monospace;
-            color: #a89968;
-            text-align: right;
+            color: var(--accent-primary);
         }
 
-        .history-item.personal-best .history-item-time {
-            color: #8b7355;
+        .pb-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+            animation: goldShine 2s ease-in-out infinite;
         }
 
-        .history-meta {
+        @keyframes goldShine {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
+
+        /* Analytics Charts */
+        .chart-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 250px;
+        }
+
+        /* Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            animation: float-up 3s ease-out forwards;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+            z-index: 10000;
+            animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+            pointer-events: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* Settings Panel */
+        .settings-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-group h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .setting-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .history-meta-info {
-            font-size: 14px;
-            color: #888;
-        }
-
-        .history-meta-info span {
-            margin-right: 15px;
-        }
-
-        .btn-delete {
-            background: rgba(74, 74, 74, 0.3);
-            color: #999;
-            padding: 8px 15px;
-            font-size: 12px;
-            border: 1px solid #555;
-        }
-
-        .btn-delete:hover {
-            background: rgba(74, 74, 74, 0.5);
-            color: #ccc;
-        }
-
-        .history-splits {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
-        }
-
-        .history-splits-title {
-            font-size: 14px;
-            color: #aaa;
             margin-bottom: 10px;
-            font-weight: bold;
         }
 
-        .history-split-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 13px;
-            color: #ccc;
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
         }
 
-        .no-runs {
+        .theme-option {
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
             text-align: center;
-            padding: 50px;
-            color: #666;
-            font-size: 18px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .comparison {
-            font-size: 14px;
-            color: #777;
-            margin-left: 10px;
+        .theme-option.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .comparison.better {
-            color: #999;
+        .theme-option.active {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px var(--accent-primary);
         }
 
+        .theme-option:not(.locked):hover {
+            transform: scale(1.05);
+        }
+
+        .lock-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 28px;
+        }
+
+        /* Insights Panel */
+        .insight-card {
+            background: rgba(96, 165, 250, 0.1);
+            border-left: 3px solid var(--info);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .insight-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-primary);
+            pointer-events: none;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -363,228 +793,887 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(168, 153, 104, 0.5);
+            background: var(--accent-primary);
             border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(168, 153, 104, 0.8);
+            background: var(--accent-secondary);
+        }
+
+        /* Motivational Message */
+        .motivation-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            margin: 20px 0;
+            font-style: italic;
+            animation: fadeInOut 4s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Keyboard Shortcut Display */
+        .hotkeys-display {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        kbd {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            color: var(--accent-primary);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin: 0 3px;
+            display: inline-block;
+        }
+
+        /* Compare Runs */
+        .compare-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .compare-run {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        /* Share Card */
+        .share-card {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            border: 2px solid var(--accent-primary);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .share-card-title {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .share-card-time {
+            font-size: 4rem;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            color: var(--accent-primary);
+            margin: 20px 0;
+        }
+
+        .share-card-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .timer-display {
+                font-size: 3rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .compare-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Disco Mode (Easter Egg) */
+        body.disco-mode {
+            animation: disco-bg 1s linear infinite;
+        }
+
+        @keyframes disco-bg {
+            0% { background: linear-gradient(135deg, #ff0080, #00ffff); }
+            25% { background: linear-gradient(135deg, #00ff00, #ff00ff); }
+            50% { background: linear-gradient(135deg, #ffff00, #0000ff); }
+            75% { background: linear-gradient(135deg, #ff0000, #00ff00); }
+            100% { background: linear-gradient(135deg, #ff0080, #00ffff); }
+        }
+
+        /* Segment Goals */
+        .segment-goal {
+            font-size: 0.8rem;
+            color: var(--warning);
+            font-style: italic;
+        }
+
+        /* Graph Styles */
+        .mini-graph {
+            width: 100%;
+            height: 60px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graph-bar {
+            position: absolute;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent-primary);
+            transition: height 0.3s ease;
+        }
+
+        /* Progress Ring */
+        .progress-ring {
+            width: 60px;
+            height: 60px;
+        }
+
+        .progress-ring-circle {
+            stroke: var(--accent-primary);
+            fill: transparent;
+            stroke-width: 4;
+            stroke-dasharray: 157;
+            stroke-dashoffset: 157;
+            transition: stroke-dashoffset 0.5s ease;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚡ Speedrun Stopwatch</h1>
-        <div class="hotkeys-info">
-            <strong>Hotkeys:</strong> 
-            <kbd>1</kbd> Start Run • 
-            <kbd>4</kbd> Add Lap • 
-            <kbd>9</kbd> Finish Run • 
-            <kbd>0</kbd> Reset
-        </div>
-        
-        <div class="stopwatch-section">
-            <div class="run-info">
-                <input type="text" id="runName" placeholder="Run Name (e.g., Any% Route A)" />
-                <textarea id="runDescription" placeholder="Description (optional)"></textarea>
+        <!-- Header with Level and Stats -->
+        <div class="header">
+            <h1>⚡ SPEEDRUN STOPWATCH UNLEASHED ⚡</h1>
+            <div>
+                <span class="level-badge" id="levelBadge">Level 1</span>
+                <span class="level-badge" id="streakBadge">🔥 0 Day Streak</span>
             </div>
-
-            <div class="timer-display" id="timerDisplay">00:00.000</div>
-
-            <div class="controls">
-                <button class="btn-start" id="startBtn" onclick="startRun()">Start Run</button>
-                <button class="btn-lap" id="lapBtn" onclick="addLap()" disabled>Add Lap</button>
-                <button class="btn-stop" id="stopBtn" onclick="finishRun()" disabled>Finish Run</button>
-                <button class="btn-reset" id="resetBtn" onclick="resetRun()">Reset</button>
+            <div class="xp-bar">
+                <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                <div class="xp-text" id="xpText">0 / 100 XP</div>
             </div>
-
-            <div class="splits-container" id="splitsContainer" style="display: none;">
-                <h3>Current Splits</h3>
-                <div id="splitsList"></div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalRuns">0</div>
+                    <div class="stat-label">Total Runs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="pbCount">0</div>
+                    <div class="stat-label">PBs Set</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalTime">00:00:00</div>
+                    <div class="stat-label">Time Played</div>
+                </div>
             </div>
         </div>
 
-        <div class="history-section">
-            <div class="history-header">
-                <h2>Run History</h2>
-                <button class="btn-export" onclick="exportRuns()">Export to CSV</button>
+        <div class="hotkeys-display">
+            <strong>Hotkeys:</strong>
+            <kbd>1</kbd> Start •
+            <kbd>2</kbd> Pause •
+            <kbd>4</kbd> Split •
+            <kbd>9</kbd> Finish •
+            <kbd>0</kbd> Reset •
+            <kbd>Esc</kbd> Settings
+        </div>
+
+        <!-- Main Grid Layout -->
+        <div class="main-grid">
+            <!-- Left: Timer and Controls -->
+            <div>
+                <div class="panel">
+                    <div class="run-info">
+                        <input type="text" id="runName" placeholder="Run Name (e.g., Any% Route A)" />
+                        <textarea id="runDescription" placeholder="Description / Notes (optional)"></textarea>
+                    </div>
+
+                    <div class="timer-display" id="timerDisplay">00:00.000</div>
+                    <div class="timer-status" id="timerStatus">Ready to start</div>
+                    <div class="timer-comparison" id="timerComparison"></div>
+
+                    <div class="controls">
+                        <button class="btn-start" id="startBtn" onclick="gameState.startRun()">Start Run</button>
+                        <button class="btn-pause" id="pauseBtn" onclick="gameState.pauseRun()" disabled>Pause</button>
+                        <button class="btn-lap" id="lapBtn" onclick="gameState.addSplit()" disabled>Split</button>
+                        <button class="btn-stop" id="stopBtn" onclick="gameState.finishRun()" disabled>Finish</button>
+                        <button class="btn-reset" id="resetBtn" onclick="gameState.resetRun()">Reset</button>
+                    </div>
+
+                    <div class="splits-container" id="splitsContainer" style="display: none;">
+                        <h3>Current Splits</h3>
+                        <div id="splitsList"></div>
+                    </div>
+                </div>
+
+                <!-- Tabs for different views -->
+                <div class="panel" style="margin-top: 20px;">
+                    <div class="tabs">
+                        <div class="tab active" onclick="switchTab('history')">History</div>
+                        <div class="tab" onclick="switchTab('analytics')">Analytics</div>
+                        <div class="tab" onclick="switchTab('insights')">AI Insights</div>
+                        <div class="tab" onclick="switchTab('compare')">Compare</div>
+                    </div>
+
+                    <!-- History Tab -->
+                    <div class="tab-content active" id="tab-history">
+                        <div id="historyList">
+                            <div style="text-align: center; padding: 50px; color: #666;">
+                                No runs yet. Start your first speedrun!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Tab -->
+                    <div class="tab-content" id="tab-analytics">
+                        <div class="chart-container">
+                            <h3 style="color: var(--accent-primary); margin-bottom: 15px;">Performance Over Time</h3>
+                            <canvas id="performanceChart" class="chart-canvas"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3 style="color: var(--accent-primary); margin-bottom: 15px;">Split Analysis</h3>
+                            <canvas id="splitChart" class="chart-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights Tab -->
+                    <div class="tab-content" id="tab-insights">
+                        <div id="insightsList"></div>
+                    </div>
+
+                    <!-- Compare Tab -->
+                    <div class="tab-content" id="tab-compare">
+                        <div id="compareContainer">
+                            <p style="text-align: center; color: #666; padding: 50px;">
+                                Complete at least 2 runs to compare them!
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="historyList">
-                <div class="no-runs">No runs yet. Start your first speedrun!</div>
+
+            <!-- Right Sidebar: Achievements and Settings -->
+            <div>
+                <div class="panel">
+                    <div class="panel-title">🏆 Achievements</div>
+                    <div class="achievements-panel" id="achievementsList"></div>
+                </div>
+
+                <div class="panel" style="margin-top: 20px;">
+                    <div class="panel-title">⚙️ Settings</div>
+
+                    <div class="settings-group">
+                        <h3>Themes</h3>
+                        <div class="theme-grid" id="themeGrid"></div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Features</h3>
+                        <div class="setting-item">
+                            <span>Sound Effects</span>
+                            <div class="toggle-switch" id="soundToggle" onclick="toggleSetting('sound')"></div>
+                        </div>
+                        <div class="setting-item">
+                            <span>Particles</span>
+                            <div class="toggle-switch active" id="particlesToggle" onclick="toggleSetting('particles')"></div>
+                        </div>
+                        <div class="setting-item">
+                            <span>Auto Split Names</span>
+                            <div class="toggle-switch active" id="autoNamesToggle" onclick="toggleSetting('autoNames')"></div>
+                        </div>
+                        <div class="setting-item">
+                            <span>PB Comparison</span>
+                            <div class="toggle-switch active" id="comparisonToggle" onclick="toggleSetting('comparison')"></div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Export / Import</h3>
+                        <button style="width: 100%; margin-bottom: 10px; background: var(--accent-primary); color: var(--bg-primary);" onclick="exportData()">Export All Data (JSON)</button>
+                        <button style="width: 100%; margin-bottom: 10px; background: var(--accent-primary); color: var(--bg-primary);" onclick="exportCSV()">Export Runs (CSV)</button>
+                        <button style="width: 100%; margin-bottom: 10px; background: var(--info); color: #fff;" onclick="generateShareCard()">Generate Share Card</button>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                        <button style="width: 100%; background: var(--accent-secondary); color: #fff;" onclick="document.getElementById('importFile').click()">Import Data</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        let startTime = null;
-        let elapsedTime = 0;
-        let timerInterval = null;
-        let isRunning = false;
-        let splits = [];
-        let lastLapTime = 0;
-        let runHistory = [];
+    <!-- Motivation Message (appears dynamically) -->
+    <div id="motivationContainer"></div>
 
-        const timerDisplay = document.getElementById('timerDisplay');
-        const startBtn = document.getElementById('startBtn');
-        const lapBtn = document.getElementById('lapBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const splitsContainer = document.getElementById('splitsContainer');
-        const splitsList = document.getElementById('splitsList');
-        const historyList = document.getElementById('historyList');
+    <script>
+        // ============================================================================
+        // GAME STATE & DATA MANAGEMENT
+        // ============================================================================
+
+        const gameState = {
+            // Timer state
+            startTime: null,
+            elapsedTime: 0,
+            pausedTime: 0,
+            timerInterval: null,
+            isRunning: false,
+            isPaused: false,
+            splits: [],
+            lastSplitTime: 0,
+
+            // Player progress
+            level: 1,
+            xp: 0,
+            totalRuns: 0,
+            pbCount: 0,
+            streak: 0,
+            lastRunDate: null,
+            totalPlayTime: 0,
+
+            // Run history
+            runHistory: [],
+
+            // Settings
+            settings: {
+                sound: false,
+                particles: true,
+                autoNames: true,
+                comparison: true,
+                theme: 'classic'
+            },
+
+            // Achievements
+            achievements: {},
+            unlockedThemes: ['classic'],
+
+            // Easter eggs
+            konamiProgress: 0,
+            discoMode: false
+        };
+
+        // ============================================================================
+        // ACHIEVEMENTS SYSTEM
+        // ============================================================================
+
+        const achievementDefinitions = [
+            { id: 'first_run', name: 'First Steps', desc: 'Complete your first run', icon: '🎯', xp: 50 },
+            { id: 'speedrunner', name: 'Speedrunner', desc: 'Complete 10 runs', icon: '⚡', xp: 100 },
+            { id: 'dedicated', name: 'Dedicated', desc: 'Complete 50 runs', icon: '💪', xp: 200 },
+            { id: 'legend', name: 'Legend', desc: 'Complete 100 runs', icon: '👑', xp: 500 },
+            { id: 'first_pb', name: 'Personal Best!', desc: 'Set your first PB', icon: '🏆', xp: 75 },
+            { id: 'pb_hunter', name: 'PB Hunter', desc: 'Set 5 PBs', icon: '🎖️', xp: 150 },
+            { id: 'perfectionist', name: 'Perfectionist', desc: 'Set 10 PBs', icon: '💎', xp: 250 },
+            { id: 'split_master', name: 'Split Master', desc: 'Complete a run with 10+ splits', icon: '✂️', xp: 100 },
+            { id: 'quick_fingers', name: 'Quick Fingers', desc: 'Complete a run under 1 minute', icon: '⚡', xp: 150 },
+            { id: 'marathon', name: 'Marathon Runner', desc: 'Complete a run over 1 hour', icon: '🏃', xp: 200 },
+            { id: 'streak_3', name: 'On Fire!', desc: 'Maintain a 3-day streak', icon: '🔥', xp: 100 },
+            { id: 'streak_7', name: 'Hot Streak!', desc: 'Maintain a 7-day streak', icon: '🔥🔥', xp: 200 },
+            { id: 'streak_30', name: 'Unstoppable!', desc: 'Maintain a 30-day streak', icon: '🔥🔥🔥', xp: 500 },
+            { id: 'night_owl', name: 'Night Owl', desc: 'Complete a run between midnight and 4 AM', icon: '🦉', xp: 100 },
+            { id: 'early_bird', name: 'Early Bird', desc: 'Complete a run between 5 AM and 7 AM', icon: '🐦', xp: 100 },
+            { id: 'consistency', name: 'Consistent', desc: 'Complete 5 runs within 5% of each other', icon: '📊', xp: 200 },
+            { id: 'improvement', name: 'Improving', desc: 'Beat your PB by 10 seconds', icon: '📈', xp: 150 },
+            { id: 'huge_improvement', name: 'Huge Improvement', desc: 'Beat your PB by 1 minute', icon: '🚀', xp: 300 },
+            { id: 'clean_splits', name: 'Clean Splits', desc: 'Complete a run with all green splits', icon: '✨', xp: 250 },
+            { id: 'explorer', name: 'Explorer', desc: 'Try 3 different themes', icon: '🎨', xp: 100 },
+            { id: 'konami', name: 'Secret Code', desc: 'Discover the Konami code', icon: '🎮', xp: 500, hidden: true },
+            { id: 'disco', name: 'Party Time!', desc: 'Activate disco mode', icon: '🕺', xp: 300, hidden: true },
+            { id: 'century', name: 'Century Club', desc: 'Accumulate 100 hours of play time', icon: '⏱️', xp: 1000 },
+            { id: 'exporter', name: 'Data Hoarder', desc: 'Export your data', icon: '💾', xp: 50 },
+            { id: 'sharer', name: 'Show Off', desc: 'Generate a share card', icon: '📤', xp: 75 }
+        ];
+
+        function checkAchievements() {
+            let newUnlocks = [];
+
+            achievementDefinitions.forEach(achievement => {
+                if (gameState.achievements[achievement.id]) return;
+
+                let unlocked = false;
+
+                switch(achievement.id) {
+                    case 'first_run':
+                        unlocked = gameState.totalRuns >= 1;
+                        break;
+                    case 'speedrunner':
+                        unlocked = gameState.totalRuns >= 10;
+                        break;
+                    case 'dedicated':
+                        unlocked = gameState.totalRuns >= 50;
+                        break;
+                    case 'legend':
+                        unlocked = gameState.totalRuns >= 100;
+                        break;
+                    case 'first_pb':
+                        unlocked = gameState.pbCount >= 1;
+                        break;
+                    case 'pb_hunter':
+                        unlocked = gameState.pbCount >= 5;
+                        break;
+                    case 'perfectionist':
+                        unlocked = gameState.pbCount >= 10;
+                        break;
+                    case 'split_master':
+                        unlocked = gameState.runHistory.some(r => r.splits.length >= 10);
+                        break;
+                    case 'quick_fingers':
+                        unlocked = gameState.runHistory.some(r => r.time < 60000);
+                        break;
+                    case 'marathon':
+                        unlocked = gameState.runHistory.some(r => r.time > 3600000);
+                        break;
+                    case 'streak_3':
+                        unlocked = gameState.streak >= 3;
+                        break;
+                    case 'streak_7':
+                        unlocked = gameState.streak >= 7;
+                        break;
+                    case 'streak_30':
+                        unlocked = gameState.streak >= 30;
+                        break;
+                    case 'night_owl':
+                        unlocked = gameState.runHistory.some(r => {
+                            const hour = new Date(r.date).getHours();
+                            return hour >= 0 && hour < 4;
+                        });
+                        break;
+                    case 'early_bird':
+                        unlocked = gameState.runHistory.some(r => {
+                            const hour = new Date(r.date).getHours();
+                            return hour >= 5 && hour < 7;
+                        });
+                        break;
+                    case 'consistency':
+                        if (gameState.runHistory.length >= 5) {
+                            const recent = gameState.runHistory.slice(0, 5);
+                            const avg = recent.reduce((sum, r) => sum + r.time, 0) / 5;
+                            unlocked = recent.every(r => Math.abs(r.time - avg) / avg < 0.05);
+                        }
+                        break;
+                    case 'century':
+                        unlocked = gameState.totalPlayTime > 360000000; // 100 hours in ms
+                        break;
+                }
+
+                if (unlocked) {
+                    gameState.achievements[achievement.id] = true;
+                    newUnlocks.push(achievement);
+                    addXP(achievement.xp);
+
+                    // Unlock themes for certain achievements
+                    if (achievement.id === 'speedrunner' && !gameState.unlockedThemes.includes('neon')) {
+                        gameState.unlockedThemes.push('neon');
+                    }
+                    if (achievement.id === 'dedicated' && !gameState.unlockedThemes.includes('matrix')) {
+                        gameState.unlockedThemes.push('matrix');
+                    }
+                    if (achievement.id === 'pb_hunter' && !gameState.unlockedThemes.includes('cyberpunk')) {
+                        gameState.unlockedThemes.push('cyberpunk');
+                    }
+                    if (achievement.id === 'streak_7' && !gameState.unlockedThemes.includes('retro')) {
+                        gameState.unlockedThemes.push('retro');
+                    }
+                    if (achievement.id === 'perfectionist' && !gameState.unlockedThemes.includes('ocean')) {
+                        gameState.unlockedThemes.push('ocean');
+                    }
+                    if (achievement.id === 'legend' && !gameState.unlockedThemes.includes('minimal')) {
+                        gameState.unlockedThemes.push('minimal');
+                    }
+                }
+            });
+
+            // Show notifications for new achievements
+            newUnlocks.forEach((achievement, index) => {
+                setTimeout(() => {
+                    showToast(`🏆 Achievement Unlocked: ${achievement.name}!`);
+                    if (gameState.settings.particles) {
+                        createConfetti();
+                    }
+                    playSound('achievement');
+                }, index * 1000);
+            });
+
+            renderAchievements();
+        }
+
+        function renderAchievements() {
+            const list = document.getElementById('achievementsList');
+            list.innerHTML = achievementDefinitions
+                .filter(a => !a.hidden || gameState.achievements[a.id])
+                .map(achievement => {
+                    const unlocked = gameState.achievements[achievement.id];
+                    return `
+                        <div class="achievement ${unlocked ? 'unlocked' : ''}">
+                            <div class="achievement-icon">${achievement.icon}</div>
+                            <div class="achievement-info">
+                                <div class="achievement-name">${achievement.name}</div>
+                                <div class="achievement-desc">${achievement.desc}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        // ============================================================================
+        // XP AND LEVELING SYSTEM
+        // ============================================================================
+
+        function addXP(amount) {
+            gameState.xp += amount;
+
+            const xpForNextLevel = gameState.level * 100;
+
+            if (gameState.xp >= xpForNextLevel) {
+                gameState.xp -= xpForNextLevel;
+                gameState.level++;
+                showToast(`🎉 Level Up! Now Level ${gameState.level}!`);
+                if (gameState.settings.particles) {
+                    createParticles('⭐', 20);
+                }
+                playSound('levelup');
+            }
+
+            updateHeader();
+        }
+
+        function updateHeader() {
+            document.getElementById('levelBadge').textContent = `Level ${gameState.level}`;
+            document.getElementById('streakBadge').textContent = `🔥 ${gameState.streak} Day Streak`;
+
+            const xpForNextLevel = gameState.level * 100;
+            const progress = (gameState.xp / xpForNextLevel) * 100;
+            document.getElementById('xpFill').style.width = progress + '%';
+            document.getElementById('xpText').textContent = `${gameState.xp} / ${xpForNextLevel} XP`;
+
+            document.getElementById('totalRuns').textContent = gameState.totalRuns;
+            document.getElementById('pbCount').textContent = gameState.pbCount;
+
+            const hours = Math.floor(gameState.totalPlayTime / 3600000);
+            const minutes = Math.floor((gameState.totalPlayTime % 3600000) / 60000);
+            const seconds = Math.floor((gameState.totalPlayTime % 60000) / 1000);
+            document.getElementById('totalTime').textContent =
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // ============================================================================
+        // STREAK SYSTEM
+        // ============================================================================
+
+        function updateStreak() {
+            const today = new Date().toDateString();
+
+            if (!gameState.lastRunDate) {
+                gameState.streak = 1;
+            } else {
+                const lastDate = new Date(gameState.lastRunDate).toDateString();
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+                if (lastDate === today) {
+                    // Already ran today, don't change streak
+                } else if (lastDate === yesterday) {
+                    // Consecutive day
+                    gameState.streak++;
+                } else {
+                    // Streak broken
+                    gameState.streak = 1;
+                }
+            }
+
+            gameState.lastRunDate = new Date().toISOString();
+            updateHeader();
+        }
+
+        // ============================================================================
+        // TIMER FUNCTIONS
+        // ============================================================================
 
         function formatTime(ms) {
             const totalSeconds = Math.floor(ms / 1000);
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
             const milliseconds = ms % 1000;
-            
+
             return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
         }
 
         function updateTimerDisplay() {
             const currentTime = Date.now();
-            elapsedTime = currentTime - startTime;
-            timerDisplay.textContent = formatTime(elapsedTime);
+            gameState.elapsedTime = currentTime - gameState.startTime - gameState.pausedTime;
+            document.getElementById('timerDisplay').textContent = formatTime(gameState.elapsedTime);
+
+            // Update comparison if enabled
+            if (gameState.settings.comparison && gameState.runHistory.length > 0) {
+                const pb = Math.min(...gameState.runHistory.map(r => r.time));
+                const diff = gameState.elapsedTime - pb;
+                const compEl = document.getElementById('timerComparison');
+
+                if (Math.abs(diff) > 1000) {
+                    const sign = diff > 0 ? '+' : '-';
+                    compEl.textContent = `${sign}${formatTime(Math.abs(diff))}`;
+                    compEl.className = diff > 0 ? 'timer-comparison comparison-behind' : 'timer-comparison comparison-ahead';
+                } else {
+                    compEl.textContent = '';
+                }
+            }
         }
 
-        function startRun() {
-            if (isRunning) return;
-            
-            startTime = Date.now() - elapsedTime;
-            isRunning = true;
-            timerInterval = setInterval(updateTimerDisplay, 10);
-            
-            timerDisplay.classList.add('running');
-            timerDisplay.classList.remove('finished');
-            startBtn.disabled = true;
-            lapBtn.disabled = false;
-            stopBtn.disabled = false;
-            
-            splitsContainer.style.display = 'block';
-        }
+        gameState.startRun = function() {
+            if (gameState.isRunning) return;
 
-        function addLap() {
-            if (!isRunning) return;
-            
-            const currentTime = elapsedTime;
-            const lapTime = currentTime - lastLapTime;
-            
-            splits.push({
+            gameState.startTime = Date.now() - gameState.elapsedTime;
+            gameState.isRunning = true;
+            gameState.isPaused = false;
+            gameState.timerInterval = setInterval(updateTimerDisplay, 10);
+
+            document.getElementById('timerDisplay').classList.add('running');
+            document.getElementById('timerStatus').textContent = 'Running...';
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('lapBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+
+            document.getElementById('splitsContainer').style.display = 'block';
+
+            showMotivation();
+            playSound('start');
+        };
+
+        gameState.pauseRun = function() {
+            if (!gameState.isRunning) return;
+
+            if (gameState.isPaused) {
+                // Resume
+                gameState.pausedTime += Date.now() - gameState.pauseStartTime;
+                gameState.timerInterval = setInterval(updateTimerDisplay, 10);
+                gameState.isPaused = false;
+                document.getElementById('timerStatus').textContent = 'Running...';
+                document.getElementById('pauseBtn').textContent = 'Pause';
+            } else {
+                // Pause
+                clearInterval(gameState.timerInterval);
+                gameState.pauseStartTime = Date.now();
+                gameState.isPaused = true;
+                document.getElementById('timerStatus').textContent = 'Paused';
+                document.getElementById('pauseBtn').textContent = 'Resume';
+            }
+        };
+
+        gameState.addSplit = function() {
+            if (!gameState.isRunning || gameState.isPaused) return;
+
+            const currentTime = gameState.elapsedTime;
+            const lapTime = currentTime - gameState.lastSplitTime;
+
+            const splitName = gameState.settings.autoNames
+                ? `Split ${gameState.splits.length + 1}`
+                : prompt('Split name:', `Split ${gameState.splits.length + 1}`) || `Split ${gameState.splits.length + 1}`;
+
+            gameState.splits.push({
                 cumulative: currentTime,
                 lap: lapTime,
-                name: `Lap ${splits.length + 1}`
+                name: splitName
             });
-            
-            lastLapTime = currentTime;
-            renderSplits();
-        }
 
-        function finishRun() {
-            if (!isRunning) return;
-            
-            clearInterval(timerInterval);
-            isRunning = false;
-            
-            const finalTime = elapsedTime;
+            gameState.lastSplitTime = currentTime;
+            renderSplits();
+            addXP(10);
+            playSound('split');
+        };
+
+        gameState.finishRun = function() {
+            if (!gameState.isRunning) return;
+
+            clearInterval(gameState.timerInterval);
+            gameState.isRunning = false;
+
+            const finalTime = gameState.elapsedTime;
             const runName = document.getElementById('runName').value.trim() || 'Unnamed Run';
             const runDescription = document.getElementById('runDescription').value.trim();
-            
-            // Add final split if there are laps
-            if (splits.length > 0) {
-                const lapTime = finalTime - lastLapTime;
-                splits.push({
+
+            // Add final split if there are splits
+            if (gameState.splits.length > 0) {
+                const lapTime = finalTime - gameState.lastSplitTime;
+                gameState.splits.push({
                     cumulative: finalTime,
                     lap: lapTime,
-                    name: `Lap ${splits.length + 1}`
+                    name: `Final Split`
                 });
             }
-            
+
             const run = {
                 id: Date.now(),
                 name: runName,
                 description: runDescription,
                 time: finalTime,
-                splits: [...splits],
+                splits: [...gameState.splits],
                 date: new Date().toISOString(),
-                lapCount: splits.length
+                lapCount: gameState.splits.length
             };
-            
-            runHistory.unshift(run);
-            renderHistory();
-            saveToStorage();
-            
-            timerDisplay.classList.remove('running');
-            timerDisplay.classList.add('finished');
-            startBtn.disabled = true;
-            lapBtn.disabled = true;
-            stopBtn.disabled = true;
-        }
 
-        function resetRun() {
-            clearInterval(timerInterval);
-            isRunning = false;
-            startTime = null;
-            elapsedTime = 0;
-            splits = [];
-            lastLapTime = 0;
-            
-            timerDisplay.textContent = '00:00.000';
-            timerDisplay.classList.remove('running', 'finished');
-            startBtn.disabled = false;
-            lapBtn.disabled = true;
-            stopBtn.disabled = true;
-            
-            splitsList.innerHTML = '';
-            splitsContainer.style.display = 'none';
-        }
+            const wasPB = gameState.runHistory.length === 0 || finalTime < Math.min(...gameState.runHistory.map(r => r.time));
+
+            gameState.runHistory.unshift(run);
+            gameState.totalRuns++;
+            gameState.totalPlayTime += finalTime;
+
+            if (wasPB) {
+                gameState.pbCount++;
+                showToast('🏆 NEW PERSONAL BEST! 🏆');
+                if (gameState.settings.particles) {
+                    createConfetti();
+                    createParticles('⭐', 30);
+                }
+                playSound('pb');
+            } else {
+                playSound('finish');
+            }
+
+            updateStreak();
+            addXP(50);
+            checkAchievements();
+            renderHistory();
+            renderInsights();
+            renderAnalytics();
+            saveToStorage();
+
+            document.getElementById('timerDisplay').classList.remove('running');
+            document.getElementById('timerStatus').textContent = wasPB ? 'Personal Best!' : 'Finished!';
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('lapBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+        };
+
+        gameState.resetRun = function() {
+            clearInterval(gameState.timerInterval);
+            gameState.isRunning = false;
+            gameState.isPaused = false;
+            gameState.startTime = null;
+            gameState.elapsedTime = 0;
+            gameState.pausedTime = 0;
+            gameState.splits = [];
+            gameState.lastSplitTime = 0;
+
+            document.getElementById('timerDisplay').textContent = '00:00.000';
+            document.getElementById('timerDisplay').classList.remove('running');
+            document.getElementById('timerStatus').textContent = 'Ready to start';
+            document.getElementById('timerComparison').textContent = '';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = 'Pause';
+            document.getElementById('lapBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+
+            document.getElementById('splitsList').innerHTML = '';
+            document.getElementById('splitsContainer').style.display = 'none';
+        };
 
         function renderSplits() {
-            splitsList.innerHTML = splits.map(split => `
-                <div class="split-item">
-                    <span class="split-name">${split.name}</span>
-                    <div class="split-times">
-                        <span class="split-cumulative">${formatTime(split.cumulative)}</span>
-                        <span class="split-lap">(+${formatTime(split.lap)})</span>
+            const list = document.getElementById('splitsList');
+            const pb = gameState.runHistory.length > 0 ? gameState.runHistory[0] : null;
+
+            list.innerHTML = gameState.splits.map((split, index) => {
+                let deltaHtml = '';
+                let goldClass = '';
+
+                if (pb && pb.splits[index] && gameState.settings.comparison) {
+                    const delta = split.cumulative - pb.splits[index].cumulative;
+                    const deltaClass = delta < 0 ? 'positive' : 'negative';
+                    const sign = delta < 0 ? '-' : '+';
+                    deltaHtml = `<span class="split-delta ${deltaClass}">${sign}${formatTime(Math.abs(delta))}</span>`;
+
+                    if (delta < 0) {
+                        goldClass = 'gold';
+                    }
+                }
+
+                return `
+                    <div class="split-item ${goldClass}">
+                        <span class="split-name">${split.name}</span>
+                        <div class="split-times">
+                            <span style="color: var(--accent-primary); font-weight: bold;">${formatTime(split.cumulative)}</span>
+                            <span style="color: var(--text-secondary);">(+${formatTime(split.lap)})</span>
+                            ${deltaHtml}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
+        // ============================================================================
+        // HISTORY AND DISPLAY
+        // ============================================================================
+
         function renderHistory() {
-            if (runHistory.length === 0) {
-                historyList.innerHTML = '<div class="no-runs">No runs yet. Start your first speedrun!</div>';
+            const list = document.getElementById('historyList');
+
+            if (gameState.runHistory.length === 0) {
+                list.innerHTML = '<div style="text-align: center; padding: 50px; color: #666;">No runs yet. Start your first speedrun!</div>';
                 return;
             }
-            
-            const personalBest = Math.min(...runHistory.map(run => run.time));
-            
-            historyList.innerHTML = runHistory.map(run => {
+
+            const personalBest = Math.min(...gameState.runHistory.map(run => run.time));
+
+            list.innerHTML = gameState.runHistory.slice(0, 20).map(run => {
                 const isPB = run.time === personalBest;
-                const comparison = personalBest < run.time ? 
-                    `<span class="comparison">+${formatTime(run.time - personalBest)}</span>` : '';
-                
+                const comparison = personalBest < run.time ?
+                    `<span style="color: var(--danger); margin-left: 10px; font-size: 1rem;">+${formatTime(run.time - personalBest)}</span>` : '';
+
                 const splitsHtml = run.splits.length > 0 ? `
-                    <div class="history-splits">
-                        <div class="history-splits-title">Splits (${run.lapCount})</div>
+                    <div style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; font-weight: bold;">
+                            Splits (${run.lapCount})
+                        </div>
                         ${run.splits.map(split => `
-                            <div class="history-split-item">
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; color: var(--text-secondary);">
                                 <span>${split.name}</span>
                                 <span>${formatTime(split.cumulative)} (+${formatTime(split.lap)})</span>
                             </div>
                         `).join('')}
                     </div>
                 ` : '';
-                
+
                 return `
                     <div class="history-item ${isPB ? 'personal-best' : ''}">
                         <div class="history-item-header">
-                            <div class="history-item-title">
-                                <h3>
+                            <div style="flex: 1;">
+                                <h3 style="color: var(--accent-primary); margin-bottom: 5px;">
                                     ${run.name}
                                     ${isPB ? '<span class="pb-badge">⭐ PB</span>' : ''}
                                 </h3>
-                                ${run.description ? `<p>${run.description}</p>` : ''}
+                                ${run.description ? `<p style="color: var(--text-secondary); font-size: 14px;">${run.description}</p>` : ''}
                             </div>
                             <div class="history-item-time">
                                 ${formatTime(run.time)}
@@ -592,12 +1681,12 @@
                             </div>
                         </div>
                         ${splitsHtml}
-                        <div class="history-meta">
-                            <div class="history-meta-info">
-                                <span>📅 ${new Date(run.date).toLocaleString()}</span>
-                                ${run.lapCount > 0 ? `<span>🏁 ${run.lapCount} laps</span>` : ''}
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size: 14px; color: var(--text-secondary);">
+                                <span style="margin-right: 15px;">📅 ${new Date(run.date).toLocaleString()}</span>
+                                ${run.lapCount > 0 ? `<span>🏁 ${run.lapCount} splits</span>` : ''}
                             </div>
-                            <button class="btn-delete" onclick="deleteRun(${run.id})">Delete</button>
+                            <button style="background: rgba(74,74,74,0.3); color: #999; padding: 8px 15px; font-size: 12px; border: 1px solid #555;" onclick="deleteRun(${run.id})">Delete</button>
                         </div>
                     </div>
                 `;
@@ -606,28 +1695,469 @@
 
         function deleteRun(id) {
             if (confirm('Are you sure you want to delete this run?')) {
-                runHistory = runHistory.filter(run => run.id !== id);
+                gameState.runHistory = gameState.runHistory.filter(run => run.id !== id);
                 renderHistory();
+                renderAnalytics();
                 saveToStorage();
             }
         }
 
-        function exportRuns() {
-            if (runHistory.length === 0) {
+        // ============================================================================
+        // ANALYTICS AND CHARTS
+        // ============================================================================
+
+        function renderAnalytics() {
+            if (gameState.runHistory.length === 0) return;
+
+            // Performance chart
+            const perfCanvas = document.getElementById('performanceChart');
+            const perfCtx = perfCanvas.getContext('2d');
+
+            perfCanvas.width = perfCanvas.offsetWidth;
+            perfCanvas.height = 250;
+
+            const runs = [...gameState.runHistory].reverse().slice(0, 20);
+            const maxTime = Math.max(...runs.map(r => r.time));
+            const minTime = Math.min(...runs.map(r => r.time));
+            const range = maxTime - minTime || 1;
+
+            perfCtx.clearRect(0, 0, perfCanvas.width, perfCanvas.height);
+
+            // Draw grid
+            perfCtx.strokeStyle = 'rgba(255,255,255,0.1)';
+            perfCtx.lineWidth = 1;
+            for (let i = 0; i < 5; i++) {
+                const y = (perfCanvas.height / 4) * i;
+                perfCtx.beginPath();
+                perfCtx.moveTo(0, y);
+                perfCtx.lineTo(perfCanvas.width, y);
+                perfCtx.stroke();
+            }
+
+            // Draw line
+            perfCtx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--accent-primary');
+            perfCtx.lineWidth = 3;
+            perfCtx.beginPath();
+
+            runs.forEach((run, i) => {
+                const x = (perfCanvas.width / (runs.length - 1)) * i;
+                const y = perfCanvas.height - ((run.time - minTime) / range) * (perfCanvas.height - 40) - 20;
+
+                if (i === 0) {
+                    perfCtx.moveTo(x, y);
+                } else {
+                    perfCtx.lineTo(x, y);
+                }
+            });
+
+            perfCtx.stroke();
+
+            // Draw points
+            runs.forEach((run, i) => {
+                const x = (perfCanvas.width / (runs.length - 1)) * i;
+                const y = perfCanvas.height - ((run.time - minTime) / range) * (perfCanvas.height - 40) - 20;
+
+                perfCtx.fillStyle = run.time === minTime ? '#ffd700' : getComputedStyle(document.body).getPropertyValue('--accent-primary');
+                perfCtx.beginPath();
+                perfCtx.arc(x, y, 5, 0, Math.PI * 2);
+                perfCtx.fill();
+            });
+
+            // Split analysis chart
+            const splitCanvas = document.getElementById('splitChart');
+            const splitCtx = splitCanvas.getContext('2d');
+
+            splitCanvas.width = splitCanvas.offsetWidth;
+            splitCanvas.height = 250;
+
+            splitCtx.clearRect(0, 0, splitCanvas.width, splitCanvas.height);
+
+            if (gameState.runHistory[0] && gameState.runHistory[0].splits.length > 0) {
+                const splits = gameState.runHistory[0].splits;
+                const maxSplitTime = Math.max(...splits.map(s => s.lap));
+
+                splits.forEach((split, i) => {
+                    const barWidth = (splitCanvas.width / splits.length) - 10;
+                    const barHeight = (split.lap / maxSplitTime) * (splitCanvas.height - 40);
+                    const x = i * (splitCanvas.width / splits.length) + 5;
+                    const y = splitCanvas.height - barHeight - 20;
+
+                    splitCtx.fillStyle = getComputedStyle(document.body).getPropertyValue('--accent-primary');
+                    splitCtx.fillRect(x, y, barWidth, barHeight);
+
+                    // Label
+                    splitCtx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text-secondary');
+                    splitCtx.font = '10px sans-serif';
+                    splitCtx.textAlign = 'center';
+                    splitCtx.fillText(`S${i + 1}`, x + barWidth / 2, splitCanvas.height - 5);
+                });
+            }
+        }
+
+        // ============================================================================
+        // AI INSIGHTS
+        // ============================================================================
+
+        function renderInsights() {
+            const container = document.getElementById('insightsList');
+
+            if (gameState.runHistory.length < 3) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 50px;">Complete at least 3 runs to see AI-powered insights!</p>';
+                return;
+            }
+
+            const insights = generateInsights();
+
+            container.innerHTML = insights.map(insight => `
+                <div class="insight-card">
+                    <div class="insight-icon">${insight.icon}</div>
+                    <div class="insight-text">${insight.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function generateInsights() {
+            const insights = [];
+            const recentRuns = gameState.runHistory.slice(0, 10);
+
+            // Average time
+            const avgTime = recentRuns.reduce((sum, r) => sum + r.time, 0) / recentRuns.length;
+            insights.push({
+                icon: '📊',
+                text: `Your average time over the last ${recentRuns.length} runs is ${formatTime(avgTime)}.`
+            });
+
+            // Improvement trend
+            if (recentRuns.length >= 5) {
+                const firstHalf = recentRuns.slice(0, Math.floor(recentRuns.length / 2));
+                const secondHalf = recentRuns.slice(Math.floor(recentRuns.length / 2));
+                const firstAvg = firstHalf.reduce((sum, r) => sum + r.time, 0) / firstHalf.length;
+                const secondAvg = secondHalf.reduce((sum, r) => sum + r.time, 0) / secondHalf.length;
+
+                if (firstAvg > secondAvg) {
+                    const improvement = ((firstAvg - secondAvg) / firstAvg) * 100;
+                    insights.push({
+                        icon: '📈',
+                        text: `Great job! You're improving! Your recent runs are ${improvement.toFixed(1)}% faster on average.`
+                    });
+                } else if (secondAvg > firstAvg) {
+                    const decline = ((secondAvg - firstAvg) / firstAvg) * 100;
+                    insights.push({
+                        icon: '📉',
+                        text: `Your recent runs are ${decline.toFixed(1)}% slower. Take a break or review your PB run for improvement areas.`
+                    });
+                }
+            }
+
+            // Consistency score
+            const variance = recentRuns.reduce((sum, r) => sum + Math.pow(r.time - avgTime, 2), 0) / recentRuns.length;
+            const stdDev = Math.sqrt(variance);
+            const consistencyScore = Math.max(0, 100 - (stdDev / avgTime) * 100);
+
+            insights.push({
+                icon: '🎯',
+                text: `Your consistency score is ${consistencyScore.toFixed(0)}/100. ${
+                    consistencyScore > 80 ? 'Excellent consistency!' :
+                    consistencyScore > 60 ? 'Good consistency, keep it up!' :
+                    'Try to be more consistent with your splits.'
+                }`
+            });
+
+            // Time of day analysis
+            const hourCounts = {};
+            recentRuns.forEach(r => {
+                const hour = new Date(r.date).getHours();
+                hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+            });
+            const mostActiveHour = Object.keys(hourCounts).reduce((a, b) => hourCounts[a] > hourCounts[b] ? a : b);
+
+            insights.push({
+                icon: '⏰',
+                text: `You're most active around ${mostActiveHour}:00. ${
+                    (mostActiveHour >= 0 && mostActiveHour < 6) ? "Night owl! 🦉" :
+                    (mostActiveHour >= 6 && mostActiveHour < 12) ? "Early bird! 🐦" :
+                    (mostActiveHour >= 12 && mostActiveHour < 18) ? "Afternoon grind! ☀️" :
+                    "Evening sessions! 🌙"
+                }`
+            });
+
+            // Best segment
+            if (gameState.runHistory[0] && gameState.runHistory[0].splits.length > 0) {
+                const pb = gameState.runHistory[0];
+                const fastestSplit = pb.splits.reduce((min, s, i) =>
+                    s.lap < pb.splits[min].lap ? i : min, 0);
+
+                insights.push({
+                    icon: '⚡',
+                    text: `Your fastest segment is "${pb.splits[fastestSplit].name}" at ${formatTime(pb.splits[fastestSplit].lap)}.`
+                });
+            }
+
+            // Motivational insight
+            if (gameState.streak >= 3) {
+                insights.push({
+                    icon: '🔥',
+                    text: `You're on a ${gameState.streak}-day streak! Keep the momentum going!`
+                });
+            }
+
+            return insights;
+        }
+
+        // ============================================================================
+        // THEME SYSTEM
+        // ============================================================================
+
+        const themes = [
+            { id: 'classic', name: 'Classic', color: '#c9b896', unlocked: true },
+            { id: 'neon', name: 'Neon', color: '#00f3ff', unlocked: false },
+            { id: 'matrix', name: 'Matrix', color: '#00ff00', unlocked: false },
+            { id: 'cyberpunk', name: 'Cyberpunk', color: '#ff006e', unlocked: false },
+            { id: 'retro', name: 'Retro', color: '#ff6b35', unlocked: false },
+            { id: 'ocean', name: 'Ocean', color: '#00b4d8', unlocked: false },
+            { id: 'minimal', name: 'Minimal', color: '#000000', unlocked: false }
+        ];
+
+        function renderThemes() {
+            const grid = document.getElementById('themeGrid');
+
+            grid.innerHTML = themes.map(theme => {
+                const unlocked = gameState.unlockedThemes.includes(theme.id);
+                const active = gameState.settings.theme === theme.id;
+
+                return `
+                    <div class="theme-option ${unlocked ? '' : 'locked'} ${active ? 'active' : ''}"
+                         style="background: ${theme.color};"
+                         onclick="${unlocked ? `applyTheme('${theme.id}')` : ''}">
+                        ${!unlocked ? '<span class="lock-icon">🔒</span>' : ''}
+                        <div style="color: ${theme.id === 'minimal' ? '#000' : '#fff'}; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+                            ${theme.name}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function applyTheme(themeId) {
+            gameState.settings.theme = themeId;
+            document.body.className = `theme-${themeId}`;
+            renderThemes();
+            saveToStorage();
+
+            // Check explorer achievement
+            const uniqueThemes = new Set();
+            // Count how many themes have been used (could track this better, but simple check for now)
+            checkAchievements();
+        }
+
+        // ============================================================================
+        // SETTINGS
+        // ============================================================================
+
+        function toggleSetting(setting) {
+            gameState.settings[setting] = !gameState.settings[setting];
+            document.getElementById(`${setting}Toggle`).classList.toggle('active');
+            saveToStorage();
+        }
+
+        // ============================================================================
+        // VISUAL EFFECTS
+        // ============================================================================
+
+        function createParticles(emoji, count) {
+            if (!gameState.settings.particles) return;
+
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.textContent = emoji;
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = window.innerHeight + 'px';
+                    particle.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    document.body.appendChild(particle);
+
+                    setTimeout(() => particle.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        function createConfetti() {
+            if (!gameState.settings.particles) return;
+
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f7931e', '#ff006e'];
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showMotivation() {
+            const messages = [
+                "You got this! 💪",
+                "New PB incoming! 🚀",
+                "Stay focused! 👁️",
+                "Let's go! ⚡",
+                "Make it count! 🎯",
+                "Push your limits! 🔥",
+                "Victory awaits! 👑",
+                "Show them how it's done! ⭐",
+                "Beast mode activated! 😤",
+                "Nothing can stop you! 💥"
+            ];
+
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            const container = document.getElementById('motivationContainer');
+
+            container.innerHTML = `<div class="motivation-message">${message}</div>`;
+
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 4000);
+        }
+
+        // ============================================================================
+        // SOUND EFFECTS (Web Audio API)
+        // ============================================================================
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!gameState.settings.sound) return;
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            switch(type) {
+                case 'start':
+                    oscillator.frequency.value = 440;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+                case 'split':
+                    oscillator.frequency.value = 550;
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'finish':
+                    oscillator.frequency.value = 660;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'pb':
+                    // Victory fanfare
+                    [440, 554, 659, 880].forEach((freq, i) => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.2, audioContext.currentTime + i * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.2);
+                        osc.start(audioContext.currentTime + i * 0.1);
+                        osc.stop(audioContext.currentTime + i * 0.1 + 0.2);
+                    });
+                    break;
+                case 'achievement':
+                case 'levelup':
+                    [523, 659, 784, 1047].forEach((freq, i) => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.15, audioContext.currentTime + i * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.08 + 0.15);
+                        osc.start(audioContext.currentTime + i * 0.08);
+                        osc.stop(audioContext.currentTime + i * 0.08 + 0.15);
+                    });
+                    break;
+            }
+        }
+
+        // ============================================================================
+        // DATA EXPORT/IMPORT
+        // ============================================================================
+
+        function exportData() {
+            const data = JSON.stringify(gameState, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `speedrun-data-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            gameState.achievements.exporter = true;
+            checkAchievements();
+            showToast('Data exported successfully!');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    Object.assign(gameState, imported);
+                    loadFromStorage();
+                    showToast('Data imported successfully!');
+                } catch (error) {
+                    alert('Error importing data: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportCSV() {
+            if (gameState.runHistory.length === 0) {
                 alert('No runs to export!');
                 return;
             }
-            
-            let csv = 'Run Name,Description,Time (ms),Time (formatted),Date,Lap Count,Splits\n';
-            
-            runHistory.forEach(run => {
-                const splitsData = run.splits.map(s => 
+
+            let csv = 'Run Name,Description,Time (ms),Time (formatted),Date,Split Count,Splits\n';
+
+            gameState.runHistory.forEach(run => {
+                const splitsData = run.splits.map(s =>
                     `${s.name}:${formatTime(s.cumulative)}(+${formatTime(s.lap)})`
                 ).join('; ');
-                
+
                 csv += `"${run.name}","${run.description}",${run.time},"${formatTime(run.time)}","${new Date(run.date).toLocaleString()}",${run.lapCount},"${splitsData}"\n`;
             });
-            
+
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -637,59 +2167,224 @@
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
+
+            showToast('CSV exported successfully!');
         }
 
-        // Save to localStorage
-        function saveToStorage() {
-            localStorage.setItem('speedrunHistory', JSON.stringify(runHistory));
+        function generateShareCard() {
+            if (gameState.runHistory.length === 0) {
+                alert('Complete at least one run first!');
+                return;
+            }
+
+            const pb = gameState.runHistory.reduce((min, r) => r.time < min.time ? r : min);
+
+            const card = document.createElement('div');
+            card.className = 'share-card';
+            card.innerHTML = `
+                <div class="share-card-title">🏆 PERSONAL BEST 🏆</div>
+                <h2 style="text-align: center; color: var(--text-primary); margin-bottom: 10px;">${pb.name}</h2>
+                <div class="share-card-time">${formatTime(pb.time)}</div>
+                <div class="share-card-stats">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--accent-primary);">${gameState.totalRuns}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Total Runs</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--accent-primary);">Lv${gameState.level}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Level</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--accent-primary);">${gameState.streak}🔥</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Day Streak</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px; color: var(--text-secondary); font-size: 0.9rem;">
+                    Speedrun Stopwatch UNLEASHED
+                </div>
+            `;
+
+            // Create modal
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+            modal.innerHTML = `
+                <div style="position: relative;">
+                    ${card.outerHTML}
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: var(--accent-primary); color: var(--bg-primary); padding: 12px 30px;">Close</button>
+                        <p style="color: var(--text-secondary); margin-top: 15px; font-size: 0.9rem;">
+                            Take a screenshot to share! 📸
+                        </p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            gameState.achievements.sharer = true;
+            checkAchievements();
         }
 
-        // Load from localStorage
-        function loadFromStorage() {
-            const saved = localStorage.getItem('speedrunHistory');
-            if (saved) {
-                runHistory = JSON.parse(saved);
-                renderHistory();
+        // ============================================================================
+        // TAB SWITCHING
+        // ============================================================================
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            if (tabName === 'analytics') {
+                setTimeout(renderAnalytics, 100);
             }
         }
 
-        // Initialize
-        loadFromStorage();
+        // ============================================================================
+        // STORAGE
+        // ============================================================================
 
-        // Keyboard shortcuts
+        function saveToStorage() {
+            localStorage.setItem('speedrunUnleashedData', JSON.stringify(gameState));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('speedrunUnleashedData');
+
+            if (saved) {
+                try {
+                    const loaded = JSON.parse(saved);
+                    Object.assign(gameState, loaded);
+
+                    // Reset runtime state
+                    gameState.isRunning = false;
+                    gameState.isPaused = false;
+                    gameState.timerInterval = null;
+                    gameState.elapsedTime = 0;
+                    gameState.splits = [];
+                    gameState.lastSplitTime = 0;
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                }
+            }
+
+            // Apply theme
+            if (gameState.settings.theme) {
+                applyTheme(gameState.settings.theme);
+            }
+
+            // Update all displays
+            updateHeader();
+            renderHistory();
+            renderAchievements();
+            renderThemes();
+            renderInsights();
+
+            // Update toggle switches
+            Object.keys(gameState.settings).forEach(key => {
+                const toggle = document.getElementById(`${key}Toggle`);
+                if (toggle) {
+                    if (gameState.settings[key]) {
+                        toggle.classList.add('active');
+                    } else {
+                        toggle.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        // ============================================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================================
+
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
         document.addEventListener('keydown', function(event) {
             // Prevent shortcuts when typing in input fields
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
                 return;
             }
 
+            // Konami code
+            if (event.key === konamiCode[gameState.konamiProgress]) {
+                gameState.konamiProgress++;
+                if (gameState.konamiProgress === konamiCode.length) {
+                    gameState.konamiProgress = 0;
+                    gameState.achievements.konami = true;
+                    showToast('🎮 KONAMI CODE ACTIVATED! 🎮');
+                    createConfetti();
+                    checkAchievements();
+                }
+            } else {
+                gameState.konamiProgress = 0;
+            }
+
+            // Regular shortcuts
             switch(event.key) {
                 case '1':
-                    // Start run
-                    if (!startBtn.disabled) {
-                        startRun();
+                    if (!document.getElementById('startBtn').disabled) {
+                        gameState.startRun();
+                    }
+                    break;
+                case '2':
+                    if (!document.getElementById('pauseBtn').disabled) {
+                        gameState.pauseRun();
                     }
                     break;
                 case '4':
-                    // Add lap
-                    if (!lapBtn.disabled) {
-                        addLap();
+                    if (!document.getElementById('lapBtn').disabled) {
+                        gameState.addSplit();
                     }
                     break;
                 case '9':
-                    // Finish run
-                    if (!stopBtn.disabled) {
-                        finishRun();
+                    if (!document.getElementById('stopBtn').disabled) {
+                        gameState.finishRun();
                     }
                     break;
                 case '0':
-                    // Reset
-                    if (!resetBtn.disabled) {
-                        resetRun();
+                    gameState.resetRun();
+                    break;
+                case 'Escape':
+                    // Could open settings modal
+                    break;
+                case 'd':
+                    // Easter egg: Disco mode
+                    if (event.ctrlKey && event.shiftKey) {
+                        gameState.discoMode = !gameState.discoMode;
+                        document.body.classList.toggle('disco-mode');
+                        if (gameState.discoMode) {
+                            gameState.achievements.disco = true;
+                            showToast('🕺 DISCO MODE ACTIVATED! 🕺');
+                            checkAchievements();
+                        }
                     }
                     break;
             }
         });
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        window.addEventListener('load', function() {
+            loadFromStorage();
+
+            // Check for achievements on load
+            checkAchievements();
+
+            // Welcome message
+            if (gameState.totalRuns === 0) {
+                setTimeout(() => {
+                    showToast('Welcome to Speedrun Stopwatch UNLEASHED! 🚀');
+                }, 500);
+            }
+        });
+
+        // Auto-save every 30 seconds
+        setInterval(saveToStorage, 30000);
+
+        // Save before unload
+        window.addEventListener('beforeunload', saveToStorage);
     </script>
 </body>
 </html>
