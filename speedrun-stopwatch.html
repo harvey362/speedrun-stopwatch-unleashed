@@ -2245,16 +2245,87 @@
                 return;
             }
 
-            // Clear localStorage
+            // Clear ALL localStorage (both new and old keys)
             localStorage.removeItem('speedrunUnleashedData');
+            localStorage.removeItem('speedrunHistory'); // Old key from original version
+
+            // Reset gameState to initial values
+            gameState.startTime = null;
+            gameState.elapsedTime = 0;
+            gameState.pausedTime = 0;
+            gameState.timerInterval = null;
+            gameState.isRunning = false;
+            gameState.isPaused = false;
+            gameState.splits = [];
+            gameState.lastSplitTime = 0;
+            gameState.level = 1;
+            gameState.xp = 0;
+            gameState.totalRuns = 0;
+            gameState.pbCount = 0;
+            gameState.streak = 0;
+            gameState.lastRunDate = null;
+            gameState.totalPlayTime = 0;
+            gameState.runHistory = [];
+            gameState.settings = {
+                sound: false,
+                particles: true,
+                autoNames: true,
+                comparison: true,
+                theme: 'classic'
+            };
+            gameState.achievements = {};
+            gameState.unlockedThemes = ['classic'];
+            gameState.konamiProgress = 0;
+            gameState.discoMode = false;
+
+            // Turn off disco mode if active
+            document.body.classList.remove('disco-mode');
+
+            // Reset theme to classic
+            document.body.className = 'theme-classic';
+
+            // Clear timer interval if running
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+
+            // Reset all UI elements
+            document.getElementById('timerDisplay').textContent = '00:00.000';
+            document.getElementById('timerDisplay').classList.remove('running');
+            document.getElementById('timerStatus').textContent = 'Ready to start';
+            document.getElementById('timerComparison').textContent = '';
+            document.getElementById('runName').value = '';
+            document.getElementById('runDescription').value = '';
+
+            // Reset button states
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = 'Pause';
+            document.getElementById('lapBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+
+            // Clear splits display
+            document.getElementById('splitsList').innerHTML = '';
+            document.getElementById('splitsContainer').style.display = 'none';
+
+            // Re-render everything
+            updateHeader();
+            renderHistory();
+            renderAchievements();
+            renderThemes();
+            renderInsights();
+
+            // Update toggle switches
+            document.getElementById('soundToggle').classList.remove('active');
+            document.getElementById('particlesToggle').classList.add('active');
+            document.getElementById('autoNamesToggle').classList.add('active');
+            document.getElementById('comparisonToggle').classList.add('active');
 
             // Show confirmation
             showToast('💥 All data has been reset!');
 
-            // Reload the page to reinitialize everything
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
+            // Save empty state to ensure it persists
+            saveToStorage();
         }
 
         // ============================================================================
